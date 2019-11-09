@@ -28,7 +28,15 @@ birthdata <- da35355.0010 %>%
 write_rds(birthdata, path = "popshiny/birthdata.rds")
 ```
 
-```{r}
+```{r mort}
+mortdata <- da35355.0010 %>%
+  clean_names() %>%
+  filter(year != "1990",
+         year != "1991") %>%
+  select(id, year, name, birth, mort)
 
+# I suppose that creating this isn't entirely necessary, seeing as how the birth rds would have done the trick as well. Still, I feel like it will get less confusing in the shiny code.
+
+write_rds(mortdata, path = "popshiny/mortdata.rds")
 ```
 
