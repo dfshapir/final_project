@@ -1,6 +1,7 @@
 library(tidyverse)
 library(shiny)
 library(shinythemes)
+library(plotly)
 
 birthdat <- read_rds("birthdata.rds")
 
@@ -16,14 +17,13 @@ ui <- fluidPage(theme = shinytheme("slate"),
                             sidebarPanel(
                                 textInput("title", "Title", "Regional Birthrate by Year, 1992-2010"),
                                 checkboxInput("fit", "Add Line of Best Fit?", value = FALSE),
-                               sliderInput("slider", "Choose a year",
-                                           value = c(1992, 2010), min = 1992, max = 2010),
                                selectInput("region", "Region",
                                            choices = levels(birthdat$name),
-                                           multiple = FALSE),
+                                           multiple = TRUE,
+                                           selected = "Republic of North Ossetia-Alania"),
                             ),
                             mainPanel(
-                                plotOutput("plot")
+                                plotlyOutput("plotly")
                             )
                         )),
                tabPanel("Mortality Rate",
@@ -34,13 +34,15 @@ ui <- fluidPage(theme = shinytheme("slate"),
 
 
 server <- function(input, output) {
-    output$plot <- renderPlot({
+    output$plotly <- renderPlotly({
         data <- subset(birthdat,
                        name %in% input$region)
         
-        p <- ggplot(rudata, aes(x = year, y = birth)) + 
-            geom_jitter() + 
+        p <- ggplot(birthdat, aes(x = year, y = birth, color = name)) + 
+            geom_point(show.legend = FALSE) + 
             ggtitle(input$title)
+        
+        ggplotly(p)
         
         if(input$fit == TRUE) {
             p <- p + geom_smooth(method = "lm")
