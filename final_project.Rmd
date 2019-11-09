@@ -12,6 +12,7 @@ library(infer)
 library(gt)
 library(gganimate)
 library(janitor)
+library(reshape2)
 ```
 
 ```{r birth}
@@ -38,5 +39,26 @@ mortdata <- da35355.0010 %>%
 # I suppose that creating this isn't entirely necessary, seeing as how the birth rds would have done the trick as well. Still, I feel like it will get less confusing in the shiny code.
 
 write_rds(mortdata, path = "popshiny/mortdata.rds")
+```
+
+```{r migr}
+migrdata <- da35355.0010 %>%
+  clean_names() %>%
+  filter(year != "1990",
+         year != "1991",
+         year != "1992",
+         year != "1993",
+         year != "1994",
+         year != "1995",
+         year != "1996") %>%
+
+# Here I had to cut a number of years; unfortunately, there was a lot of missing data over the period from 1992-1996. I was already planning on cutting 1990 and 1991 as it was.
+  
+  select(year, name, arr_int, dep_int) %>%
+  melt(id = c("year", "name"))
+
+# I had to melt the data to get the arrival and departure data into one column. I'll be able to create a geom_col graph in this way that has two columns for each year -- an arrival and a departure.
+
+write_rds(migrdata, path = "popshiny/migrdata.rds")
 ```
 
