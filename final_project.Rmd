@@ -13,6 +13,14 @@ library(gt)
 library(gganimate)
 library(janitor)
 library(reshape2)
+library(sf)
+```
+
+```{r btrends}
+outline <- read_rds("gadm36_RUS_1_sf.rds") %>%
+  select(GID_1, NAME_1, VARNAME_1, geometry)
+
+# There was a lot of excess data in here. I didn't need it.
 ```
 
 ```{r birth}
