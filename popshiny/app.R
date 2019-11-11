@@ -7,17 +7,36 @@ birthdat <- read_rds("birthdata.rds")
 mortdat <- read_rds("mortdata.rds")
 migrdat <- read_rds("migrdata.rds")
 
-# Run the final_project.Rmd before running the Shiny; that's where I wrote the rds's that are above.
+# Run the final_project.Rmd before running the Shiny; that's where I wrote the rds's that are above. I
+# don't think it'll work otherwise.
 
 ui <- fluidPage(theme = shinytheme("slate"),
+                
+# Above: set the color scheme, below: beginning the navbar.
     
-    navbarPage("Specifics of Russian Population Decline",
+    navbarPage("Specifics of Russian Regional Demographic Change",
                tabPanel("About",
-                        h5("Text will go here.")),
-               tabPanel("Broad Trends",
-                        h5("Text will go here.")),
+                        h4("Population decline in Eastern Europe is a well-known phenomenon. Bulgaria, for example, has lost two million people from its peak of nine million in around 1990; Ukraine’s population, meanwhile, has declined by an average of 300,000 people per year since the fall of the Soviet Union. Russia has also been implicated in this “demographic crisis:” in early 2019, the U.N. Commission on Population and Development concluded that Russia was projected to lose over 10 million people by 2050, shrinking by about 7 percent from 145.9 million in 2019 to 135.8 million in 2050, according to the U.N.’s World Population Prospects."),
+                        br(),
+                        h4("However, while it is tempting to lump Russia in with the rest of Eastern Europe in terms of demographic trends, Russia is its own unique case. For one, Russia is the world’s second-most popular destination for migrants, most of whom come from Central Asia or the Caucasus. Also, Russia has not had nearly the same issues with emigration as have other Eastern European countries — although the countries has seen problems resulting from broadly low birth rates in the 1990s and mortality rates that differ wildly from region to region."),
+                        br(),
+                        h4("These data and graphs explore Russia’s demographic trends on a regional level. Russian regional differences are fascinating: comparing, for example, the mortality rates of Chechnya and Tver Oblast, we see vast differentiation. Many of Russia’s minority-ethnic “republics” have birth rates that are significantly higher than ethnically-Russian-dominated regions. Foreign emigration from Sakha/Yakutia was much higher than immigration in the 1990s — whereas Penza Oblast is just the opposite."),
+                        br(),
+                        h4("There are several tabs with interactive data: if you wish to learn about regional aspects of the Russian demographic crisis, feel free to look around. The data here is incomplete; the dataset was last updated in 2010. However, one can nonetheless gain a broader understanding of Russia’s demographic problem: demographic issues compound generationally, meaning that effects we see from these data are quite relevant for present and future data for Russian policymakers and international observers."),
+                        h4(),
+                        h5("For broader information on more recent data regarding Russia’s demographic crisis, see this commentary.")),
+
+# I put breaks in between all of my paragraphs to make things look nice.
+                        
+               tabPanel("Average Natural Growth",
+                        h4("Text will go here.")),
                tabPanel("Birthrate",
                         h4("This section shows trends in birthrates by Russian region over time. Use the sidebar tools to narrow down regions of interest. Multiple regions can be selected at once, should you wish to compare."),
+                        h5("Some variation can be observed in birthrate. As a broad trend, birthrates tend to go slightly down over the 1990s, corresponding with abysmal economic conditions and uncertainty for the future. But they then experience a steady rise across the Putin presidency and the economic success of the early 2000s, leading to a slight mean increase over time. Rates also vary significantly amongst themselves: in North Caucasian republics such as Chechnya, for example, birthrates are significantly higher than in other parts of the country."),
+
+# This code is very similar to that of the next panel, mortality rate. I've put comments for the
+# commands that I'm calling here in the next panel.
+
                         sidebarLayout(
                             sidebarPanel(
                                 textInput("title", "Title", "Regional Birthrate by Year, 1992-2010"),
@@ -37,10 +56,17 @@ ui <- fluidPage(theme = shinytheme("slate"),
                         )),
                tabPanel("Mortality Rate",
                         h4("This section shows trends in mortality rates by Russian region over time. Use the sidebar tools to narrow down regions of interest. Multiple regions can be selected at once, should you wish to compare."),
+                        h5("Mortality rates show a slight increase over time, with some variation over region."),
                         sidebarLayout(
                             sidebarPanel(
                                 textInput("titl", "Title", "Regional Mortality Rate by Year, 1992-2010"),
+                                
+# Add title (above), add checkbox for line of best fit (below)
+                                
                                 checkboxInput("fi", "Add Line of Best Fit?", value = FALSE),
+
+# Add the option to toggle between regions, multiple = TRUE gives the option to select multiple regions
+
                                 selectInput("regio", "Region",
                                             choices = levels(mortdat$name),
                                             multiple = TRUE,
@@ -53,13 +79,18 @@ ui <- fluidPage(theme = shinytheme("slate"),
                             ),
                             mainPanel(
                                 plotlyOutput("plotl")
+                                
+# Note that I call all of my inputs slightly different things -- adding a letter, subtracting a letter
+# here and there. I want to differentiate between different parts of my code so that things don't
+# get mixed up. 
                             )
                         )),
                tabPanel("Arrivals and Departures",
-                        h4("This section tracks foreign migration to and from Russian regions by year. Data starts at 1996."),
+                        h4("This section tracks foreign migration to and from Russian regions by year. Data starts at 1997."),
+                        h5("Despite the stereotype that Eastern Europe is hemorrhaging people, Russia is actually a quite popular immigrant destination -- by some data, the second most popular in the world. This is a vestige of the Soviet era, in which citizens of other Soviet republics would come into Russia, the economic center of the Union, in search of work. While the Soviet Union has fallen, these corridors have not, and many migrants from Central Asia and the Caucasus flock to Russia's regions for better pay. This interactive data shows foreign arrivals versus foreign departures over a 15-year period by region."),
                         sidebarLayout(
                             sidebarPanel(
-                                textInput("tit", "Title", "Regional Arrivals and Departures, 1995-2010"),
+                                textInput("tit", "Title", "Regional Arrivals and Departures, 1997-2010"),
                                 checkboxInput("f", "Add Line of Best Fit?", value = FALSE),
                                 selectInput("regi", "Region",
                                             choices = levels(migrdat$name),
@@ -79,25 +110,38 @@ ui <- fluidPage(theme = shinytheme("slate"),
 
 server <- function(input, output) {
     output$plotly <- renderPlotly({
+        
+# Have to put everything with plotly right here instead of plot. I prefer plotly because it's basically
+# the same as ggplot but there are more options for the reader with minimal additional code.
+
         data <- subset(birthdat,
                        name %in% input$region)
         
+# Subsetting the data here ensures that the reader can actually toggle between regions. 
+        
         p <- ggplot(data, aes(x = year, y = birth, color = name)) + 
-            geom_point(show.legend = FALSE) + 
+            geom_point() + 
             ggtitle(input$title)
         
         ggplotly(p)
         
         if(input$fit == TRUE) {
             p <- p + geom_smooth(method = "lm")}
+        
+# The above if/then function works with the checkbox: if the box is checked, a regression line is run
+# on the plot. Below, the single "p" (or another name, as you'll see below) prints the plot.
+        
             p
         })
     output$plotl <- renderPlotly({
         dat <- subset(mortdat,
                        name %in% input$regio)
         
+# Note that my subset looks a bit different -- I'm subsetting a different data set and including a 
+# different input. This happens for the next graph as well.
+        
         q <- ggplot(dat, aes(x = year, y = mort, color = name)) + 
-            geom_point(show.legend = FALSE) + 
+            geom_point() + 
             ggtitle(input$titl)
         
         ggplotly(q)
@@ -116,6 +160,10 @@ server <- function(input, output) {
         r <- ggplot(da, aes(x = year, y = value)) +
             geom_col(aes(fill = variable), position = "dodge") +
             ggtitle(input$tit)
+        
+# Geom_col() is a better graph for this sort of data than a line graph, because I'm trying to compare
+# two separate variables -- namely, international arrivals and departures. In my opinion, it looks 
+# better and is easier for the viewer to interpret.
 
         ggplotly(r)
         
