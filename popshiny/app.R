@@ -16,6 +16,11 @@ ui <- fluidPage(theme = shinytheme("slate"),
     
     navbarPage("Specifics of Russian Regional Demographic Change",
                tabPanel("About",
+                        h2("Overview"),
+                        br(),
+                        
+# I put breaks between all of my paragraphs to avoid overly dense text.
+                        
                         h4("Population decline in Eastern Europe is a well-known phenomenon. Bulgaria, for example, has lost two million people from its peak of nine million in around 1990; Ukraine’s population, meanwhile, has declined by an average of 300,000 people per year since the fall of the Soviet Union. Russia has also been implicated in this “demographic crisis:” in early 2019, the U.N. Commission on Population and Development concluded that Russia was projected to lose over 10 million people by 2050, shrinking by about 7 percent from 145.9 million in 2019 to 135.8 million in 2050, according to the U.N.’s World Population Prospects."),
                         br(),
                         h4("However, while it is tempting to lump Russia in with the rest of Eastern Europe in terms of demographic trends, Russia is its own unique case. For one, Russia is the world’s second-most popular destination for migrants, most of whom come from Central Asia or the Caucasus. Also, Russia has not had nearly the same issues with emigration as have other Eastern European countries — although the countries has seen problems resulting from broadly low birth rates in the 1990s and mortality rates that differ wildly from region to region."),
@@ -24,7 +29,15 @@ ui <- fluidPage(theme = shinytheme("slate"),
                         br(),
                         h4("There are several tabs with interactive data: if you wish to learn about regional aspects of the Russian demographic crisis, feel free to look around. The data here is incomplete; the dataset was last updated in 2010. However, one can nonetheless gain a broader understanding of Russia’s demographic problem: demographic issues compound generationally, meaning that effects we see from these data are quite relevant for present and future data for Russian policymakers and international observers."),
                         h4(),
-                        h5("For broader information on more recent data regarding Russia’s demographic crisis, see this commentary.")),
+                        p('For more information on depopulation, check out ', 
+                          a(href = 'https://russiamatters.org/blog/russian-population-decline-spotlight-again', 'this link'), 'which also links to a lot of other interesting sources on the subject.')
+                        
+# I had to look up how to make a hyperlink. Originally, using the above code, I tried to put the hyperlink
+# at the end. But for whatever reason these calls automatically put a space after the hyperlink. So I
+# just extended the sentence, instead of following the lengthy corrective course that Stack Overflow
+# suggested.
+
+),
 
 # I put breaks in between all of my paragraphs to make things look nice.
                         
