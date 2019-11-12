@@ -19,19 +19,25 @@ library(sf)
 ```{r btrends}
 load("~/class-2019-09-10/final_project/rus_data/ICPSR_35355/DS0010/35355-0010-Data.rda")
 
+gendat <- da35355.0010 %>%
+  filter(NAME != "Magadan Oblast                     	")
+
 str_squish(da35355.0010$NAME)
+
+gendat2 <- gendat %>%
+  filter(YEAR == "2010")
 
 # I took out the white space in the string here. I figured it would be easier and cleaner that way.
 
 outline <- read_rds("gadm36_RUS_1_sf.rds") %>%
   select(GID_1, NAME_1, VARNAME_1) %>%
   filter(NAME_1 != "Maga Buryatdan",
-         NAME_1 != "Nenets")
+         NAME_1 != "Nenets") %>%
 
-# There was a lot of excess data in here. I didn't need it. I also filtered out "Maga Buryatdan" and "Nenets" because both of them were elided into different provinces in the actual data. Below, I had to recode all of the names so that I could match the two sets together. I thought long and hard about how to do this more efficiently, but this does the trick for this data set. Obviously, for longer data sets, it just would have been infeasible. But for one with such a small number of values, I figured it would work.
+# There was a lot of excess data in here. I didn't need it. I also filtered out "Maga Buryatdan" and "Nenets" because both of them were elided into different provinces in the actual data. Below, I had to recode all of the names so that I could match the two sets together. I thought long and hard about how to do this more efficiently, but this does the trick for this data set. Obviously, for longer data sets, it just would have been infeasible. But for one with such a small number of values, I figured it would work. I sincerely apologize for all of the code.
 
 
-recode(outline$NAME_1, "Adygey" = "Republic of Adygea",
+mutate(NAME = (recode(NAME_1, "Adygey" = "Republic of Adygea",
        "Altay" = "Altai Krai",
        "Amur" = "Amur Oblast",
        "Arkhangel'sk" = "Arkhangelsk Oblast",
@@ -111,7 +117,10 @@ recode(outline$NAME_1, "Adygey" = "Republic of Adygea",
        "Yamal-Nenets" = "Yamalo-Nenets Autonomous Okrug",
        "Yaroslavl'" = "Yaroslavl Oblast",
        "Yevrey" = "Jewish Autonomous Oblast",
-       "Zabaykal'ye" = "Zabaykalsky Krai")
+       "Zabaykal'ye" = "Zabaykalsky Krai"))) %>%
+  mutate(NAME = as.factor(NAME))
+
+Shape <- cbind(gendat2, outline)
 
 ```
 
