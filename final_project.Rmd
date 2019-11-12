@@ -17,15 +17,105 @@ library(sf)
 ```
 
 ```{r btrends}
-outline <- read_rds("gadm36_RUS_1_sf.rds") %>%
-  select(GID_1, NAME_1, VARNAME_1, geometry)
+load("~/class-2019-09-10/final_project/rus_data/ICPSR_35355/DS0010/35355-0010-Data.rda")
 
-# There was a lot of excess data in here. I didn't need it.
+str_squish(da35355.0010$NAME)
+
+# I took out the white space in the string here. I figured it would be easier and cleaner that way.
+
+outline <- read_rds("gadm36_RUS_1_sf.rds") %>%
+  select(GID_1, NAME_1, VARNAME_1) %>%
+  filter(NAME_1 != "Maga Buryatdan",
+         NAME_1 != "Nenets")
+
+# There was a lot of excess data in here. I didn't need it. I also filtered out "Maga Buryatdan" and "Nenets" because both of them were elided into different provinces in the actual data. Below, I had to recode all of the names so that I could match the two sets together. I thought long and hard about how to do this more efficiently, but this does the trick for this data set. Obviously, for longer data sets, it just would have been infeasible. But for one with such a small number of values, I figured it would work.
+
+
+recode(outline$NAME_1, "Adygey" = "Republic of Adygea",
+       "Altay" = "Altai Krai",
+       "Amur" = "Amur Oblast",
+       "Arkhangel'sk" = "Arkhangelsk Oblast",
+       "Astrakhan'" = "Astrakhan Oblast",
+       "Bashkortostan" = "Republic of Bashkortostan",
+       "Belgorod" = "Belgorod Oblast",
+       "Bryansk" = "Bryansk Oblast",
+       "Buryat" = "Republic of Buryatia",
+       "Chechnya" = "Chechen Republic",
+       "Chelyabinsk" = "Chelyabinsk Oblast",
+       "Chukot" = "Chukotka Autonomous Okrug",
+       "Chuvash" = "Chuvash Republic",
+       "City of St. Petersburg" = "Saint Petersburg",
+       "Dagestan" = "Republic of Dagestan",
+       "Gorno-Altay" = "Altai Republic",
+       "Ingush" = "Republic of Ingushetia",
+       "Irkutsk" = "Irkutsk Oblast",
+       "Ivanovo" = "Ivanovo Oblast",
+       "Kabardin-Balkar" = "Kabardino-Balkar Republic",
+       "Kaliningrad" = "Kaliningrad Oblast",
+       "Kalmyk" = "Republic of Kalmykia",
+       "Kaluga" = "Kaluga Oblast",
+       "Kamchatka" = "Kamchatka Krai",
+       "Karachay-Cherkess" = "Karachay-Cherkess Republic",
+       "Karelia" = "Republic of Karelia",
+       "Kemerovo" = "Kemerovo Oblast",
+       "Khabarovsk" = "Khabarovsk Krai",
+       "Khakass" = "Republic of Khakassia",
+       "Khanty-Mansiy" = "Khanty-Mansi Autonomous Okrug-Yugra",
+       "Kirov" = "Kirov Oblast",
+       "Komi" = "Komi Republic",
+       "Kostroma" = "Kostroma Oblast",
+       "Krasnodar" = "Krasnodar Krai",
+       "Krasnoyarsk" = "Krasnoyarsk Krai",
+       "Kurgan" = "Kurgan Oblast",
+       "Kursk" = "Kursk Oblast",
+       "Leningrad" = "Leningrad Oblast",
+       "Lipetsk" = "Lipetsk Oblast",
+       "Mariy-El" = "Mari El Republic",
+       "Mordovia" = "Republic of Mordovia",
+       "Moscow City" = "Moscow",
+       "Moskva" = "Moscow Oblast",
+       "Murmansk" = "Murmansk Oblast",
+       "Nizhegorod" = "Nizhny Novgorod Oblast",
+       "North Ossetia" = "Republic of North Ossetia-Alania",
+       "Novgorod" = "Novgorod Oblast",
+       "Novosibirsk" = "Novosibirsk Oblast",
+       "Omsk" = "Omsk Oblast",
+       "Orel" = "Oryol Oblast",
+       "Orenburg" = "Orenburg Oblast",
+       "Penza" = "Penza Oblast",
+       "Perm'" = "Perm Krai",
+       "Primor'ye" = "Primorsky Krai",
+       "Pskov" = "Pskov Oblast",
+       "Rostov" = "Rostov Oblast",
+       "Ryazan'" = "Ryazan Oblast",
+       "Sakha" = "Sakha (Yakutia) Republic",
+       "Sakhalin" = "Sakhalin Oblast",
+       "Samara" = "Samara Oblast",
+       "Saratov" = "Saratov Oblast",
+       "Smolensk" = "Smolensk Oblast",
+       "Stavropol'" = "Stavropol Krai",
+       "Sverdlovsk" = "Sverdlovsk Oblast",
+       "Tambov" = "Tambov Oblast",
+       "Tatarstan" = "Republic of Tatarstan",
+       "Tomsk" = "Tomsk Oblast",
+       "Tula" = "Tula Oblast",
+       "Tuva" = "Tuva Republic",
+       "Tver'" = "Tver Oblast",
+       "Tyumen'" = "Tyumen Oblast",
+       "Udmurt" = "Udmurt Republic",
+       "Ul'yanovsk" = "Ulyanovsk Oblast",
+       "Vladimir" = "Vladimir Oblast",
+       "Volgograd" = "Volgograd Oblast",
+       "Vologda" = "Vologda Oblast",
+       "Voronezh" = "Voronezh Oblast",
+       "Yamal-Nenets" = "Yamalo-Nenets Autonomous Okrug",
+       "Yaroslavl'" = "Yaroslavl Oblast",
+       "Yevrey" = "Jewish Autonomous Oblast",
+       "Zabaykal'ye" = "Zabaykalsky Krai")
+
 ```
 
 ```{r birth}
-load("~/class-2019-09-10/final_project/rus_data/ICPSR_35355/DS0010/35355-0010-Data.rda")
-
 birthdata <- da35355.0010 %>%
   clean_names() %>%
     filter(year != "1990",
