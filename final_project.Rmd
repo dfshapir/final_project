@@ -19,15 +19,23 @@ library(sf)
 ```{r btrends}
 load("~/class-2019-09-10/final_project/rus_data/ICPSR_35355/DS0010/35355-0010-Data.rda")
 
-gendat <- da35355.0010 %>%
-  filter(NAME != "Magadan Oblast                     	")
+sq <- str_squish(da35355.0010$NAME)
 
-str_squish(da35355.0010$NAME)
+# I took out the white space in the string here. I figured it would be easier and cleaner that way.
+
+trends <- cbind(sq, da35355.0010)
+
+# I bound together the squished string and the original data set, and then selected the squished name column below.
+
+gendat <- trends[-c(841:861), ] %>%
+  select(sq, ID, YEAR, BIRTH, MORT, ARR_INT, DEP_INT)
+
+# I took out lines 841-861, which are Magadan Oblast. For whatever reason, the other dataset has no data for Magadan Oblast. I also cut down on the variables to clean up the data.
 
 gendat2 <- gendat %>%
   filter(YEAR == "2010")
 
-# I took out the white space in the string here. I figured it would be easier and cleaner that way.
+# I decided to make the year equal 2010 to give the most recent overview of data.
 
 outline <- read_rds("gadm36_RUS_1_sf.rds") %>%
   select(GID_1, NAME_1, VARNAME_1) %>%
@@ -37,7 +45,7 @@ outline <- read_rds("gadm36_RUS_1_sf.rds") %>%
 # There was a lot of excess data in here. I didn't need it. I also filtered out "Maga Buryatdan" and "Nenets" because both of them were elided into different provinces in the actual data. Below, I had to recode all of the names so that I could match the two sets together. I thought long and hard about how to do this more efficiently, but this does the trick for this data set. Obviously, for longer data sets, it just would have been infeasible. But for one with such a small number of values, I figured it would work. I sincerely apologize for all of the code.
 
 
-mutate(NAME = (recode(NAME_1, "Adygey" = "Republic of Adygea",
+mutate(sq = (recode(NAME_1, "Adygey" = "Republic of Adygea",
        "Altay" = "Altai Krai",
        "Amur" = "Amur Oblast",
        "Arkhangel'sk" = "Arkhangelsk Oblast",
@@ -118,9 +126,9 @@ mutate(NAME = (recode(NAME_1, "Adygey" = "Republic of Adygea",
        "Yaroslavl'" = "Yaroslavl Oblast",
        "Yevrey" = "Jewish Autonomous Oblast",
        "Zabaykal'ye" = "Zabaykalsky Krai"))) %>%
-  mutate(NAME = as.factor(NAME))
+  mutate(sq = as.factor(sq))
 
-Shape <- cbind(gendat2, outline)
+Shape <- merge(gendat2, outline, by = 'sq')
 
 ```
 
