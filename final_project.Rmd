@@ -128,8 +128,13 @@ mutate(sq = (recode(NAME_1, "Adygey" = "Republic of Adygea",
        "Zabaykal'ye" = "Zabaykalsky Krai"))) %>%
   mutate(sq = as.factor(sq))
 
-Shape <- merge(gendat2, outline, by = 'sq')
+Shape <- merge(gendat2, outline, by = 'sq') %>%
+  drop_na()
 
+shapedat <- ggplot(data = Shape, aes(geometry = geometry, fill = BIRTH)) +
+  geom_sf()
+
+shapedat
 ```
 
 ```{r birth}
