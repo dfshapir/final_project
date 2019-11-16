@@ -6,6 +6,7 @@ library(plotly)
 birthdat <- read_rds("birthdata.rds")
 mortdat <- read_rds("mortdata.rds")
 migrdat <- read_rds("migrdata.rds")
+birgen <- read_rds("bir2010.rds")
 
 # Run the final_project.Rmd before running the Shiny; that's where I wrote the rds's that are above. I
 # don't think it'll work otherwise.

@@ -14,7 +14,6 @@ library(gganimate)
 library(janitor)
 library(reshape2)
 library(sf)
-library(crs)
 ```
 
 ```{r btrends}
@@ -141,11 +140,20 @@ Shape <- merge(gendat2, outline, by = 'sq') %>%
 
 birs <- ggplot(data = Shape, aes(geometry = geometry, fill = BIRTH)) +
   geom_sf() +
-  scale_fill_viridis_c(option = "plasma", trans = "sqrt")
+  scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
 
 # I wanted a color scheme that could be seen well, so I put the scheme to plasma, and made the colors coordinate to the square root instead of the pure data. This makes differences more visible.
+  
+  coord_sf(xlim = c(20, 179), expand = FALSE) +
+  labs(title = "Birthrate by Region, 2010*",
+       caption = "*Not including Magadan Oblast",
+       x = "Longitude",
+       y = "Latitude",
+       fill = "Birth Rate (%)")
 
-birs
+write_rds(birs, path = "popshiny/bir2010.rds")
+
+# Wrote rds to my shiny app folder.
 ```
 
 ```{r birth}
