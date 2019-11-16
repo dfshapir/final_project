@@ -14,6 +14,7 @@ library(gganimate)
 library(janitor)
 library(reshape2)
 library(sf)
+library(maps)
 ```
 
 ```{r btrends}
@@ -143,7 +144,7 @@ birs <- ggplot(data = Shape, aes(geometry = geometry, fill = BIRTH)) +
   scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
 
 # I wanted a color scheme that could be seen well, so I put the scheme to plasma, and made the colors coordinate to the square root instead of the pure data. This makes differences more visible.
-  
+
   coord_sf(xlim = c(20, 179), expand = FALSE) +
   labs(title = "Birthrate by Region, 2010*",
        caption = "*Not including Magadan Oblast",
@@ -154,6 +155,24 @@ birs <- ggplot(data = Shape, aes(geometry = geometry, fill = BIRTH)) +
 write_rds(birs, path = "popshiny/bir2010.rds")
 
 # Wrote rds to my shiny app folder.
+```
+
+```{r mort summary}
+# I'm making the exact same map for mortality rates in 2010 -- the code is essentially identical to the previous chunk.
+
+mors <- ggplot(data = Shape, aes(geometry = geometry, fill = MORT)) +
+  geom_sf() +
+  scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
+  coord_sf(xlim = c(20, 179), expand = FALSE) +
+  labs(title = "Mortality Rate by Region, 2010*",
+       caption = "*Not including Magadan Oblast",
+       x = "Longitude",
+       y = "Latitude",
+       fill = "Mortality Rate (%)")
+
+write_rds(mors, path = "popshiny/mor2010.rds")
+
+# Wrote rds.
 ```
 
 ```{r birth}
