@@ -142,42 +142,16 @@ Shape <- merge(gendat2, outline, by = 'sq') %>%
 write_rds(Shape, path = "popshiny/Shape.rds")
 ```
 
-```{r birth summary}
+```{r}
+gendat3 <- gendat %>%
+  filter(YEAR == "1995") %>%
+  mutate_all(~replace(., is.na(.), 0))
 
-birs <- ggplot(data = Shape, aes(geometry = geometry, fill = BIRTH)) +
-  geom_sf() +
-  scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
+# Creating a new rds for 1995 data that I can use in my shiny.
 
-# I wanted a color scheme that could be seen well, so I put the scheme to plasma, and made the colors coordinate to the square root instead of the pure data. This makes differences more visible.
+oldshape <- merge(gendat3, outline, by = 'sq')
 
-  coord_sf(xlim = c(20, 179), expand = FALSE) +
-  labs(title = "Birthrate by Region, 2010*",
-       caption = "*Not including Magadan Oblast",
-       x = "Longitude",
-       y = "Latitude",
-       fill = "Birth Rate (%)")
-
-write_rds(birs, path = "popshiny/bir2010.rds")
-
-# Wrote rds to my shiny app folder.
-```
-
-```{r mort summary}
-# I'm making the exact same map for mortality rates in 2010 -- the code is essentially identical to the previous chunk.
-
-mors <- ggplot(data = Shape, aes(geometry = geometry, fill = MORT)) +
-  geom_sf() +
-  scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
-  coord_sf(xlim = c(20, 179), expand = FALSE) +
-  labs(title = "Mortality Rate by Region, 2010*",
-       caption = "*Not including Magadan Oblast",
-       x = "Longitude",
-       y = "Latitude",
-       fill = "Mortality Rate (%)")
-
-write_rds(mors, path = "popshiny/mor2010.rds")
-
-# Wrote rds.
+write_rds(oldshape, path = "popshiny/oldshape.rds")
 ```
 
 ```{r birth}
