@@ -49,7 +49,11 @@ ui <- fluidPage(theme = shinytheme("slate"),
                         p("In 1991, the Soviet Union (USSR) fell and splintered into fifteen successor states. While many in the West see the fall of the Soviet Union as long-awaited deliverance for the people for the former USSR from the yoke of totalitarian communism, the truth is much more nuanced. While the 1990s did bring citizens of some post-Soviet states a more open political and economic system, citizens also had to entirely reconstruct their society, their economy, and their political system. The economic situation was especially difficult. In the Soviet Union, constituent republics were kept under tight control from Moscow and were heavily centralized. When the USSR fell, formerly domestic supply chains instantly became spread across a multitude of different countries with different political systems, geopolitical goals, and national consciousnesses. Think of it this way: imagine if suddenly, Texas, Florida, Georgia, and the Carolinas became independent countries tomorrow. Everyone’s economy would take a huge hit – contracts would have to be reworked, trade relations would have to be established, and intrastate economies would have to be constructed that are not based on the center. For Russia, the fall of the Soviet Union was an immediate economic disaster, as shown by this World Bank graph (not my creation):"),
                         imageOutput("myImage"),
                         p("What does this all have to do with demographics? For one, Russian birthrates cratered. Young couples became less certain about their futures, and many thought twice before having kids or simply did not have them at all. In many cases, wages were not even getting paid, making it difficult to support a child even in the short run. Mortality rates also broadly rose throughout the 1990s: although there was a fair amount of variation, alcoholism rates went up, life expectancy fell, and standards of living became broadly worse. Below are graphs of the birthrate and mortality rate in 1995, the heart of the 1990s:"),
-                        plotlyOutput("plotshape")),
+                        p("Data by 2010 looks a lot different. Economic prosperity, political stability and the government’s 2007 «Материнский капитал» (Maternity Capital) law helped an already rising birth rate. This is reflected by the fact that the percentages in the legend on this map are significantly higher than the percentages in the first birth rate map."),
+                        plotlyOutput("plotshape"),
+                        p("Mortality rates, meanwhile, have stayed relatively level:"),
+                        plotlyOutput("plotshap"),
+                        p("As is clear, the general trend for Russian natural population growth in the 1990s-2000s can be summed up thusly: as a result of socioeconomic collapse in the 1990s, birthrates plummeted. However, as a result of improved economic conditions, political stability and government programs encouraging large families, birthrates rose prodigiously to balance out only slightly growing mortality rates. In today’s Russia, however, we see the aftershock of the demographic crisis of the 1990s, as less kids born in the 1990s = less women of childbearing age in the present day. The following tabs offer interactive graphs on regional aspects of natural growth factors.")),
                tabPanel("Birthrate",
                         h4("This section shows trends in birthrates by Russian region over time. Use the sidebar tools to narrow down regions of interest. Multiple regions can be selected at once, should you wish to compare."),
                         h5("Some variation can be observed in birthrate. As a broad trend, birthrates tend to go slightly down over the 1990s, corresponding with abysmal economic conditions and uncertainty for the future. But they then experience a steady rise across the Putin presidency and the economic success of the early 2000s, leading to a slight mean increase over time. Rates also vary significantly amongst themselves: in North Caucasian republics such as Chechnya, for example, birthrates are significantly higher than in other parts of the country. Today, however, we see the aftershock of the 1990s problem: kids born in the 1990s are now at child-bearing age. Since there are less of them than in other generations, births have plateaued/started coming down in many areas."),
@@ -147,7 +151,7 @@ server <- function(input, output) {
 # Didn't want to delete the file right after I created it.
     
     output$plotshape <- renderPlotly({
-        o <- ggplot(data = shapedat, aes(geometry = geometry, fill = BIRTH)) +
+        n <- ggplot(data = shapedat, aes(geometry = geometry, fill = BIRTH)) +
             geom_sf() +
             scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
             
@@ -160,11 +164,34 @@ server <- function(input, output) {
                  x = "Longitude",
                  y = "Latitude",
                  fill = "Birth Rate (%)")
+
+# Put graph into plotly (below)
+        
+        ggplotly(n)
+
+# Printed graph
+                
+        n
+    })
+    
+    output$plotshap <- renderPlotly({
+        o <- ggplot(data = shapedat, aes(geometry = geometry, fill = MORT)) +
+            geom_sf() +
+            scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
+            coord_sf(xlim = c(20, 179), expand = FALSE) +
+            labs(title = "Mortality Rate by Region, 2010*",
+                 caption = "*Not including Magadan Oblast",
+                 x = "Longitude",
+                 y = "Latitude",
+                 fill = "Mortality Rate (%)")
+
+# I have very similar code for this graph as I did for my last graph. 
+
         ggplotly(o)
         
         o
     })
-    
+        
     output$plotly <- renderPlotly({
         
 # Have to put everything with plotly right here instead of plot. I prefer plotly because it's basically
