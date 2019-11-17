@@ -2,12 +2,12 @@ library(tidyverse)
 library(shiny)
 library(shinythemes)
 library(plotly)
+library(sf)
 
 birthdat <- read_rds("birthdata.rds")
 mortdat <- read_rds("mortdata.rds")
 migrdat <- read_rds("migrdata.rds")
-birgen <- read_rds("bir2010.rds")
-morgen <- read_rds("mor2010.rds")
+shapedat <- read_rds("Shape.rds")
 
 # Run the final_project.Rmd before running the Shiny; that's where I wrote the rds's that are above. I
 # don't think it'll work otherwise.
@@ -16,21 +16,21 @@ ui <- fluidPage(theme = shinytheme("slate"),
                 
 # Above: set the color scheme, below: beginning the navbar.
     
-    navbarPage("Specifics of Russian Regional Demographic Change",
+    navbarPage("Russian Regional Demographic Change",
                tabPanel("About",
                         h2("Overview"),
                         br(),
                         
 # I put breaks between all of my paragraphs to avoid overly dense text.
                         
-                        h4("Population decline in Eastern Europe is a well-known phenomenon. Bulgaria, for example, has lost two million people from its peak of nine million in around 1990; Ukraine’s population, meanwhile, has declined by an average of 300,000 people per year since the fall of the Soviet Union. Russia has also been implicated in this “demographic crisis:” in early 2019, the U.N. Commission on Population and Development concluded that Russia was projected to lose over 10 million people by 2050, shrinking by about 7 percent from 145.9 million in 2019 to 135.8 million in 2050, according to the U.N.’s World Population Prospects."),
+                        p("Population decline in Eastern Europe is a well-known phenomenon. Bulgaria, for example, has lost two million people from its peak of nine million in around 1990; Ukraine’s population, meanwhile, has declined by an average of 300,000 people per year since the fall of the Soviet Union. Russia has also been implicated in this “demographic crisis:” in early 2019, the U.N. Commission on Population and Development concluded that Russia was projected to lose over 10 million people by 2050, shrinking by about 7 percent from 145.9 million in 2019 to 135.8 million in 2050, according to the U.N.’s World Population Prospects."),
                         br(),
-                        h4("However, while it is tempting to lump Russia in with the rest of Eastern Europe in terms of demographic trends, Russia is its own unique case. For one, Russia is the world’s second-most popular destination for migrants, most of whom come from Central Asia or the Caucasus. Also, Russia has not had nearly the same issues with emigration as have other Eastern European countries — although the countries has seen problems resulting from broadly low birth rates in the 1990s and mortality rates that differ wildly from region to region."),
+                        p("However, while it is tempting to lump Russia in with the rest of Eastern Europe in terms of demographic trends, Russia is its own unique case. For one, Russia is the world’s second-most popular destination for migrants, most of whom come from Central Asia or the Caucasus. Also, Russia has not had nearly the same issues with emigration as have other Eastern European countries — although the countries has seen problems resulting from broadly low birth rates in the 1990s and mortality rates that differ wildly from region to region."),
                         br(),
-                        h4("These data and graphs explore Russia’s demographic trends on a regional level. Russian regional differences are fascinating: comparing, for example, the mortality rates of Chechnya and Tver Oblast, we see vast differentiation. Many of Russia’s minority-ethnic “republics” have birth rates that are significantly higher than ethnically-Russian-dominated regions. Foreign emigration from Sakha/Yakutia was much higher than immigration in the 1990s — whereas Penza Oblast is just the opposite."),
+                        p("These data and graphs explore Russia’s demographic trends on a regional level. Russian regional differences are fascinating: comparing, for example, the mortality rates of Chechnya and Tver Oblast, we see vast differentiation. Many of Russia’s minority-ethnic “republics” have had birth rates that are significantly higher than ethnically-Russian-dominated regions. Foreign emigration from Sakha/Yakutia was much higher than immigration in the 1990s — whereas Penza Oblast is just the opposite. The data here range only from 1992-2010; however, it is through these data that we can uncover the origins of today's demographic crisis."),
                         br(),
-                        h4("There are several tabs with interactive data: if you wish to learn about regional aspects of the Russian demographic crisis, feel free to look around. The data here is incomplete; the dataset was last updated in 2010. However, one can nonetheless gain a broader understanding of Russia’s demographic problem: demographic issues compound generationally, meaning that effects we see from these data are quite relevant for present and future data for Russian policymakers and international observers."),
-                        h4(),
+                        p("There are several tabs with interactive data: if you wish to learn about regional aspects of the Russian demographic crisis, feel free to look around. The data runs until 2010. However, one can nonetheless gain a broader understanding of Russia’s demographic problem: demographic issues compound generationally, meaning that effects we see from these data are quite relevant for present and future data for Russian policymakers and international observers."),
+                        br(),
                         p('For more information on depopulation, check out ', 
                           a(href = 'https://russiamatters.org/blog/russian-population-decline-spotlight-again', 'this link'), 'which also links to a lot of other interesting sources on the subject.')
                         
@@ -44,10 +44,15 @@ ui <- fluidPage(theme = shinytheme("slate"),
 # I put breaks in between all of my paragraphs to make things look nice.
                         
                tabPanel("Average Natural Growth",
-                        h4("Text will go here.")),
+                        h2("Average Natural Growth"),
+                        br(),
+                        p("In 1991, the Soviet Union (USSR) fell and splintered into fifteen successor states. While many in the West see the fall of the Soviet Union as long-awaited deliverance for the people for the former USSR from the yoke of totalitarian communism, the truth is much more nuanced. While the 1990s did bring citizens of some post-Soviet states a more open political and economic system, citizens also had to entirely reconstruct their society, their economy, and their political system. The economic situation was especially difficult. In the Soviet Union, constituent republics were kept under tight control from Moscow and were heavily centralized. When the USSR fell, formerly domestic supply chains instantly became spread across a multitude of different countries with different political systems, geopolitical goals, and national consciousnesses. Think of it this way: imagine if suddenly, Texas, Florida, Georgia, and the Carolinas became independent countries tomorrow. Everyone’s economy would take a huge hit – contracts would have to be reworked, trade relations would have to be established, and intrastate economies would have to be constructed that are not based on the center. For Russia, the fall of the Soviet Union was an immediate economic disaster, as shown by this World Bank graph (not my creation):"),
+                        imageOutput("myImage"),
+                        p("What does this all have to do with demographics? For one, Russian birthrates cratered. Young couples became less certain about their futures, and many thought twice before having kids or simply did not have them at all. In many cases, wages were not even getting paid, making it difficult to support a child even in the short run. Mortality rates also broadly rose throughout the 1990s: although there was a fair amount of variation, alcoholism rates went up, life expectancy fell, and standards of living became broadly worse. Below are graphs of the birthrate and mortality rate in 1995, the heart of the 1990s:"),
+                        plotlyOutput("plotshape")),
                tabPanel("Birthrate",
                         h4("This section shows trends in birthrates by Russian region over time. Use the sidebar tools to narrow down regions of interest. Multiple regions can be selected at once, should you wish to compare."),
-                        h5("Some variation can be observed in birthrate. As a broad trend, birthrates tend to go slightly down over the 1990s, corresponding with abysmal economic conditions and uncertainty for the future. But they then experience a steady rise across the Putin presidency and the economic success of the early 2000s, leading to a slight mean increase over time. Rates also vary significantly amongst themselves: in North Caucasian republics such as Chechnya, for example, birthrates are significantly higher than in other parts of the country."),
+                        h5("Some variation can be observed in birthrate. As a broad trend, birthrates tend to go slightly down over the 1990s, corresponding with abysmal economic conditions and uncertainty for the future. But they then experience a steady rise across the Putin presidency and the economic success of the early 2000s, leading to a slight mean increase over time. Rates also vary significantly amongst themselves: in North Caucasian republics such as Chechnya, for example, birthrates are significantly higher than in other parts of the country. Today, however, we see the aftershock of the 1990s problem: kids born in the 1990s are now at child-bearing age. Since there are less of them than in other generations, births have plateaued/started coming down in many areas."),
 
 # This code is very similar to that of the next panel, mortality rate. I've put comments for the
 # commands that I'm calling here in the next panel.
@@ -124,6 +129,42 @@ ui <- fluidPage(theme = shinytheme("slate"),
 
 
 server <- function(input, output) {
+    output$myImage <- renderImage({
+
+#  I had to put output$image here so it would match with my imageOutput that I had put in my input.
+        
+        list(src = "worldbank.png",
+             contentType = 'image/png',
+             width = 600,
+             length = 350,
+             style = "display: block; margin-left: auto; margin-right: auto;")
+        
+# Set the width and length to reasonable numbers so that the file wouldn't take up the whole page. Also
+# centered the image.
+        
+    }, deleteFile = FALSE)
+    
+# Didn't want to delete the file right after I created it.
+    
+    output$plotshape <- renderPlotly({
+        o <- ggplot(data = shapedat, aes(geometry = geometry, fill = BIRTH)) +
+            geom_sf() +
+            scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
+            
+# I wanted a color scheme that could be seen well, so I put the scheme to plasma, and made the colors 
+# coordinate to the square root instead of the pure data. This makes differences more visible.
+            
+            coord_sf(xlim = c(20, 179), expand = FALSE) +
+            labs(title = "Birthrate by Region, 2010*",
+                 caption = "*Not including Magadan Oblast",
+                 x = "Longitude",
+                 y = "Latitude",
+                 fill = "Birth Rate (%)")
+        ggplotly(o)
+        
+        o
+    })
+    
     output$plotly <- renderPlotly({
         
 # Have to put everything with plotly right here instead of plot. I prefer plotly because it's basically
@@ -174,7 +215,8 @@ server <- function(input, output) {
         
         r <- ggplot(da, aes(x = year, y = value)) +
             geom_col(aes(fill = variable), position = "dodge") +
-            ggtitle(input$tit)
+            ggtitle(input$tit) +
+            scale_fill_discrete(name = "Legend")
         
 # Geom_col() is a better graph for this sort of data than a line graph, because I'm trying to compare
 # two separate variables -- namely, international arrivals and departures. In my opinion, it looks 

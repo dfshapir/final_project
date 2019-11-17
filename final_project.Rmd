@@ -135,6 +135,11 @@ mutate(sq = (recode(NAME_1, "Adygey" = "Republic of Adygea",
 
 Shape <- merge(gendat2, outline, by = 'sq') %>%
   drop_na()
+
+```
+
+```{r}
+write_rds(Shape, path = "popshiny/Shape.rds")
 ```
 
 ```{r birth summary}
