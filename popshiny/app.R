@@ -48,29 +48,28 @@ ui <- fluidPage(theme = shinytheme("slate"),
                         h2("Average Natural Growth"),
                         br(),
                         p("In 1991, the Soviet Union (USSR) fell and splintered into fifteen successor states. While many in the West see the fall of the Soviet Union as long-awaited deliverance for the people for the former USSR from the yoke of totalitarian communism, the truth is much more nuanced. While the 1990s did bring citizens of some post-Soviet states a more open political and economic system, citizens also had to entirely reconstruct their society, their economy, and their political system. The economic situation was especially difficult. In the Soviet Union, constituent republics were kept under tight control from Moscow and were heavily centralized. When the USSR fell, formerly domestic supply chains instantly became spread across a multitude of different countries with different political systems, geopolitical goals, and national consciousnesses. Think of it this way: imagine if suddenly, Texas, Florida, Georgia, and the Carolinas became independent countries tomorrow. Everyone’s economy would take a huge hit – contracts would have to be reworked, trade relations would have to be established, and intrastate economies would have to be constructed that are not based on the center. For Russia, the fall of the Soviet Union was an immediate economic disaster, as shown by this World Bank graph (not my creation):"),
+                        br(),
                         imageOutput("myImage"),
                         p("What does this all have to do with demographics? For one, Russian birthrates cratered. Young couples became less certain about their futures, and many thought twice before having kids or simply did not have them at all. In many cases, wages were not even getting paid, making it difficult to support a child even in the short run. Mortality rates also broadly rose throughout the 1990s: although there was a fair amount of variation, alcoholism rates went up, life expectancy fell, and standards of living became broadly worse. Below are graphs of the birthrate and mortality rate in 1995, the heart of the 1990s:"),
                         br(),
                         h4("Fig. 1"),
-                        plotlyOutput("plotoldshape"),
+                        imageOutput("plotoldshape"),
                         
 # As an overall rule in this project, I use plotly. I'd like for people to be able to interact with
 # my maps, and it's very little extra effort on my part. The only issue is that it slows down the 
-# "Run App" very significantly. 
+# "Run App" very significantly. Thus, I saved my ggplots as images for this section instead -- otherwise,
+# nothing would pull up. 
 
                         br(),
                         h4("Fig. 2"),
-                        plotlyOutput("plotoldshap"),
-                        br(),
+                        imageOutput("plotoldshap"),
                         p("Data by 2010 looks a lot different. Economic prosperity, political stability and the government’s 2007 «Материнский капитал» (Maternity Capital) law helped an already rising birth rate. This is reflected by the fact that the percentages in the legend on this map are significantly higher than the percentages in the first birth rate map."),
                         br(),
                         h4("Fig. 3"),
-                        plotlyOutput("plotshape"),
+                        imageOutput("plotshape"),
                         p("Mortality rates, meanwhile, have stayed relatively level:"),
-                        br(),
                         h4("Fig. 4"),
-                        plotlyOutput("plotshap"),
-                        br(),
+                        imageOutput("plotshap"),
                         p("As is clear, the general trend for Russian natural population growth in the 1990s-2000s can be summed up thusly: as a result of socioeconomic collapse in the 1990s, birthrates plummeted. However, as a result of improved economic conditions, political stability and government programs encouraging large families, birthrates rose prodigiously to balance out only slightly growing mortality rates. In today’s Russia, however, we see the aftershock of the demographic crisis of the 1990s, as less kids born in the 1990s = less women of childbearing age in the present day. The following tabs offer interactive graphs on regional aspects of natural growth factors.")),
               
                  tabPanel("Birthrate",
@@ -169,84 +168,43 @@ server <- function(input, output) {
     
 # Didn't want to delete the file right after I created it.
     
-    output$plotoldshape <- renderPlotly({
-        l <- ggplot(data = oldshape, aes(geometry = geometry, fill = BIRTH)) +
-            geom_sf() +
-            scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
-            
-# For commentary on this plot, see my code for plot "n" -- it is essentially the exact same code.
-            
-            coord_sf(xlim = c(20, 179), expand = FALSE) +
-            labs(title = "Birthrate by Region, 1995*",
-                 caption = "*Not including Magadan Oblast",
-                 x = "Longitude",
-                 y = "Latitude",
-                 fill = "Birth Rate (%)")
-        ggplotly(l)
+    output$plotoldshape <- renderImage({
         
-        l
-    })
+        list(src = "l.png",
+             contentType = 'image/png',
+             width = 800,
+
+# Since the height/weight ratio has been set in my Rmd, I only have to mess with the width here. 
+
+             style = "display: block; margin-left: auto; margin-right: auto;")
+        
+    }, deleteFile = FALSE)
     
-    output$plotoldshap <- renderPlotly({
-        m <- ggplot(data = oldshape, aes(geometry = geometry, fill = MORT)) +
-            geom_sf() +
-            scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
-            coord_sf(xlim = c(20, 179), expand = FALSE) +
-            labs(title = "Mortality Rate by Region, 1995*",
-                 caption = "*Not including Magadan Oblast",
-                 x = "Longitude",
-                 y = "Latitude",
-                 fill = "Mortality Rate (%)")
+    output$plotoldshap <- renderImage({
         
-# For commentary on this plot, see plot "o". They are almost identical. Really, plots "l" and "m" are
-# very similar to "n" and "o", just with 1995 data instead of 2010 data.
-        
-        ggplotly(m)
-        
-        m
-    })
+        list(src = "m.png",
+             contentType = 'image/png',
+             width = 800,
+             style = "display: block; margin-left: auto; margin-right: auto;")
+
+    }, deleteFile = FALSE)
     
-    output$plotshape <- renderPlotly({
-        n <- ggplot(data = shapedat, aes(geometry = geometry, fill = BIRTH)) +
-            geom_sf() +
-            scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
-            
-# I wanted a color scheme that could be seen well, so I put the scheme to plasma, and made the colors 
-# coordinate to the square root instead of the pure data. This makes differences more visible.
-            
-            coord_sf(xlim = c(20, 179), expand = FALSE) +
-            labs(title = "Birthrate by Region, 2010*",
-                 caption = "*Not including Magadan Oblast",
-                 x = "Longitude",
-                 y = "Latitude",
-                 fill = "Birth Rate (%)")
-
-# Put graph into plotly (below)
+    output$plotshape <- renderImage({
         
-        ggplotly(n)
+        list(src = "n.png",
+             contentType = 'image/png',
+             width = 800,
+             style = "display: block; margin-left: auto; margin-right: auto;")
 
-# Printed graph
-                
-        n
-    })
+    }, deleteFile = FALSE)
     
-    output$plotshap <- renderPlotly({
-        o <- ggplot(data = shapedat, aes(geometry = geometry, fill = MORT)) +
-            geom_sf() +
-            scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
-            coord_sf(xlim = c(20, 179), expand = FALSE) +
-            labs(title = "Mortality Rate by Region, 2010*",
-                 caption = "*Not including Magadan Oblast",
-                 x = "Longitude",
-                 y = "Latitude",
-                 fill = "Mortality Rate (%)")
-
-# I have very similar code for this graph as I did for my last graph. 
-
-        ggplotly(o)
+    output$plotshap <- renderImage({
         
-        o
-    })
+        list(src = "o.png",
+             contentType = 'image/png',
+             width = 800,
+             style = "display: block; margin-left: auto; margin-right: auto;")
+    }, deleteFile = FALSE)
         
     output$plotly <- renderPlotly({
         

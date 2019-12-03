@@ -199,3 +199,64 @@ migrdata <- da35355.0010 %>%
 write_rds(migrdata, path = "popshiny/migrdata.rds")
 ```
 
+```{r oldshape 1}
+l <- ggplot(data = oldshape, aes(geometry = geometry, fill = BIRTH)) +
+            geom_sf() +
+            scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
+            
+# For commentary on this plot, see my code for plot "n" -- it is essentially the exact same code.
+            
+            coord_sf(xlim = c(20, 179), expand = FALSE) +
+            labs(title = "Birthrate by Region, 1995*",
+                 caption = "*Not including Magadan Oblast",
+                 x = "Longitude",
+                 y = "Latitude",
+                 fill = "Birth Rate (%)")
+ggsave("popshiny/l.png", width = 7, height = 2.75)
+```
+
+```{r oldshape 2}
+m <- ggplot(data = oldshape, aes(geometry = geometry, fill = MORT)) +
+            geom_sf() +
+            scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
+            coord_sf(xlim = c(20, 179), expand = FALSE) +
+            labs(title = "Mortality Rate by Region, 1995*",
+                 caption = "*Not including Magadan Oblast",
+                 x = "Longitude",
+                 y = "Latitude",
+                 fill = "Mortality Rate (%)")
+ggsave("popshiny/m.png", width = 7, height = 2.75)
+
+# For commentary on this plot, see plot "o". They are almost identical. Really, plots "l" and "m" are very similar to "n" and "o", just with 1995 data instead of 2010 data.
+```
+
+```{r shape 1}
+n <- ggplot(data = Shape, aes(geometry = geometry, fill = BIRTH)) +
+            geom_sf() +
+            scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
+            
+# I wanted a color scheme that could be seen well, so I put the scheme to plasma, and made the colors 
+# coordinate to the square root instead of the pure data. This makes differences more visible.
+            
+            coord_sf(xlim = c(20, 179), expand = FALSE) +
+            labs(title = "Birthrate by Region, 2010*",
+                 caption = "*Not including Magadan Oblast",
+                 x = "Longitude",
+                 y = "Latitude",
+                 fill = "Birth Rate (%)")
+ggsave("popshiny/n.png", width = 7, height = 2.75)
+```
+
+```{r shape 2}
+o <- ggplot(data = Shape, aes(geometry = geometry, fill = MORT)) +
+            geom_sf() +
+            scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
+            coord_sf(xlim = c(20, 179), expand = FALSE) +
+            labs(title = "Mortality Rate by Region, 2010*",
+                 caption = "*Not including Magadan Oblast",
+                 x = "Longitude",
+                 y = "Latitude",
+                 fill = "Mortality Rate (%)")
+ggsave("popshiny/o.png", width = 7, height = 2.75)
+```
+
