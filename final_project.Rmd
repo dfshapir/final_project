@@ -29,7 +29,10 @@ trends <- cbind(sq, da35355.0010)
 # I bound together the squished string and the original data set, and then selected the squished name column below.
 
 gendat <- trends[-c(841:861), ] %>%
-  select(sq, ID, YEAR, BIRTH, MORT, ARR_INT, DEP_INT)
+  
+# Below, I had an issue with select. I tried to put in the "move" package to change my projection for my maps but then it screwed the whole thing up and I couldn't use the typical select function anymore. Anyway, I fixed it by just putting dplyr::select for everything. 
+  
+  dplyr::select(sq, ID, YEAR, BIRTH, MORT, ARR_INT, DEP_INT)
 
 # I took out lines 841-861, which are Magadan Oblast. For whatever reason, the other dataset has no data for Magadan Oblast. I also cut down on the variables to clean up the data.
 
@@ -40,7 +43,7 @@ gendat2 <- gendat %>%
 # I decided to make the year equal 2010 to give the most recent overview of data. I also changed my NAs to zeros so that I could get my merge to run.
 
 outline <- read_rds("gadm36_RUS_1_sf.rds") %>%
-  select(GID_1, NAME_1, VARNAME_1) %>%
+  dplyr::select(GID_1, NAME_1, VARNAME_1) %>%
   filter(NAME_1 != "Maga Buryatdan") %>%
 
 # There was a lot of excess data in here. I didn't need it. I also filtered out "Maga Buryatdan" because it was elided into a different province in the actual data. Below, I had to recode all of the names so that I could match the two sets together. I thought long and hard about how to do this more efficiently, but this does the trick for this data set. Obviously, for longer data sets, it just would have been infeasible. But for one with such a small number of values, I figured it would work. I sincerely apologize for all of the code.
@@ -159,7 +162,7 @@ birthdata <- da35355.0010 %>%
   clean_names() %>%
     filter(year != "1990",
          year != "1991") %>%
-  select(id, year, name, birth, mort)
+  dplyr::select(id, year, name, birth, mort)
 
 # I first filtered out 1990 and 1991, because in both of those years, Russia was still part of the Soviet Union for at least part of the time.
 
@@ -171,7 +174,7 @@ mortdata <- da35355.0010 %>%
   clean_names() %>%
   filter(year != "1990",
          year != "1991") %>%
-  select(id, year, name, birth, mort)
+  dplyr::select(id, year, name, birth, mort)
 
 # I suppose that creating this isn't entirely necessary, seeing as how the birth rds would have done the trick as well. Still, I feel like it will get less confusing in the shiny code.
 
@@ -191,7 +194,7 @@ migrdata <- da35355.0010 %>%
 
 # Here I had to cut a number of years; unfortunately, there was a lot of missing data over the period from 1992-1996. I was already planning on cutting 1990 and 1991 as it was.
   
-  select(year, name, arr_int, dep_int) %>%
+  dplyr::select(year, name, arr_int, dep_int) %>%
   melt(id = c("year", "name"))
 
 # I had to melt the data to get the arrival and departure data into one column. I'll be able to create a geom_col graph in this way that has two columns for each year -- an arrival and a departure.
