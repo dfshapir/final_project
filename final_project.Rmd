@@ -214,7 +214,7 @@ l <- ggplot(data = oldshape, aes(geometry = geometry, fill = BIRTH)) +
                  caption = "*Not including Magadan Oblast",
                  x = "Longitude",
                  y = "Latitude",
-                 fill = "Birth Rate (%)")
+                 fill = "Birth Rate")
 ggsave("popshiny/l.png", width = 7, height = 2.75)
 ```
 
@@ -227,7 +227,7 @@ m <- ggplot(data = oldshape, aes(geometry = geometry, fill = MORT)) +
                  caption = "*Not including Magadan Oblast",
                  x = "Longitude",
                  y = "Latitude",
-                 fill = "Mortality Rate (%)")
+                 fill = "Mortality Rate")
 ggsave("popshiny/m.png", width = 7, height = 2.75)
 
 # For commentary on this plot, see plot "o". They are almost identical. Really, plots "l" and "m" are very similar to "n" and "o", just with 1995 data instead of 2010 data.
@@ -246,7 +246,7 @@ n <- ggplot(data = Shape, aes(geometry = geometry, fill = BIRTH)) +
                  caption = "*Not including Magadan Oblast",
                  x = "Longitude",
                  y = "Latitude",
-                 fill = "Birth Rate (%)")
+                 fill = "Birth Rate")
 ggsave("popshiny/n.png", width = 7, height = 2.75)
 ```
 
@@ -259,7 +259,7 @@ o <- ggplot(data = Shape, aes(geometry = geometry, fill = MORT)) +
                  caption = "*Not including Magadan Oblast",
                  x = "Longitude",
                  y = "Latitude",
-                 fill = "Mortality Rate (%)")
+                 fill = "Mortality Rate")
 ggsave("popshiny/o.png", width = 7, height = 2.75)
 ```
 
