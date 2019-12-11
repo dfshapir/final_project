@@ -32,7 +32,10 @@ ui <- fluidPage(theme = shinytheme("slate"),
                         br(),
                         p("There are several tabs with interactive data: if you wish to learn about regional aspects of the Russian demographic crisis, feel free to look around. The data runs until 2010. However, one can nonetheless gain a broader understanding of Russia’s demographic problem: demographic issues compound generationally, meaning that effects we see from these data are quite relevant for present and future data for Russian policymakers and international observers."),
                         br(),
-                        p('For more information on depopulation, check out ', 
+                        p('Here is a short video that gives information about my project. Click ',
+                          a(href = 'https://www.youtube.com/watch?v=pc9U20GZejM&t=2s', 'this link'), 'to view.'),
+                        br(),
+                        p('Also, as mentioned in the video, for more information on depopulation, check out ', 
                           a(href = 'https://russiamatters.org/blog/russian-population-decline-spotlight-again', 'this link'), 'which also links to a lot of other interesting sources on the subject.')
                         
 # I had to look up how to make a hyperlink. Originally, using the above code, I tried to put the hyperlink
