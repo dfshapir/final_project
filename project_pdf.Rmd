@@ -9,26 +9,34 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(magick)
 ```
 
-# Russian Regional Demographic Change
+There’s a common stereotype that Eastern Europe is hemorrhaging people. And to a large degree that’s true; Bulgaria, Ukraine and Moldova’s populations, for example, are all in freefall as people move out in search of work and higher pay. But Russia is different – it’s actually one of the world’s most popular destinations for migrants, and the population hasn’t really dropped that much since the fall of the Soviet Union – in fact, 2019 was the first time it had dropped in years. So why are people talking about Russia having a "demographic crisis"? This project sheds light on some of the reasons for this crisis. 
 
-#### By: Daniel Shapiro
-
-In 1991, the Soviet Union (USSR) fell and splintered into fifteen successor states. While many in the West see the fall of the Soviet Union as long-awaited deliverance for the people for the former USSR from the yoke of totalitarian communism, the truth is much more nuanced. While the 1990s did bring citizens of some post-Soviet states a more open political and economic system, citizens also had to entirely reconstruct their society, their economy, and their political system. The economic situation was especially difficult. In the Soviet Union, constituent republics were kept under tight control from Moscow and were heavily centralized. When the USSR fell, formerly domestic supply chains instantly became spread across a multitude of different countries with different political systems, geopolitical goals, and national consciousnesses. Think of it this way: imagine if suddenly, Texas, Florida, Georgia, and the Carolinas became independent countries tomorrow. Everyone’s economy would take a huge hit – contracts would have to be reworked, trade relations would have to be established, and intrastate economies would have to be constructed that are not based on the center. For Russia, the fall of the Soviet Union was an immediate economic disaster.
+History is crucial to unpacking this topic. In 1991, the Soviet Union (USSR) fell and splintered into fifteen successor states. While many in the West see the fall of the Soviet Union as long-awaited deliverance for the people for the former USSR from the yoke of totalitarian communism, the truth is much more nuanced. While the 1990s did bring citizens of some post-Soviet states a more open political and economic system, citizens also had to entirely reconstruct their society, their economy, and their political system. The economic situation was especially difficult. In the Soviet Union, constituent republics were kept under tight control from Moscow and were heavily centralized. When the USSR fell, formerly domestic supply chains instantly became spread across a multitude of different countries with different political systems, geopolitical goals, and national consciousnesses. Think of it this way: imagine if suddenly, Texas, Florida, Georgia, and the Carolinas became independent countries tomorrow. Everyone’s economy would take a huge hit – contracts would have to be reworked, trade relations would have to be established, and intrastate economies would have to be constructed that are not based on the center. For Russia, the fall of the Soviet Union was an immediate economic disaster.
 
 What does this have to do with demographics? For one, Russian birthrates cratered. Young couples became less certain about their futures, and many thought twice before having kids or simply did not have them at all. In many cases, wages were not even getting paid, making it difficult to support a child even in the short run. Mortality rates also broadly rose throughout the 1990s: although there was a fair amount of variation, alcoholism rates went up, life expectancy fell, and standards of living became broadly worse. Below are graphs of the birthrate and mortality rate in 1995, the heart of the 1990s:
-
+\hfill\break
 ![Figure 1](popshiny/l.png)
 \hfill\break
 ![Figure 2](popshiny/m.png)
-
+\hfill\break
 Data by 2010 looks a lot different. Economic prosperity, political stability and the government’s 2007 Maternity Capital law helped an already rising birth rate. This is reflected by the fact that the percentages in the legend on this map are significantly higher than the percentages in the first birth rate map.
 
 ![Figure 3](popshiny/n.png)
 \hfill\break
 ![Figure 4](popshiny/o.png)
-\hfill\break
 
 The general trend for Russian natural population growth in the 1990s-2000s can be summed up thusly: as a result of socioeconomic collapse in the 1990s, birthrates plummeted. However, as a result of improved economic conditions, political stability and government programs encouraging large families, birthrates rose prodigiously to balance out only slightly growing mortality rates. In today’s Russia, however, we see the aftershock of the demographic crisis of the 1990s, as less kids born in the 1990s = less women of childbearing age in the present day. Also, birthrates for the majority-Russian heartland are significantly lower than for a lot of ethnic republics, such as Chechnya, Ingushetia and Tuva. These both present issues for today's Russian leadership.
 
+This project provides interactive graphics for the data shown above. One can toggle between regions and view differences in birth rates and mortality rates. The project also contains data on foreign emigration and immigration, as shown in this example of Sakha/Yakutia:
+
+```{r, align = "center"}
+sakha <- image_read("popshiny/sakha.png")
+image_scale(sakha, "1000x600!")
+```
+
+
+Overall, this project was created to illuminate the recent historical demographic trends that are behind today’s “crisis”. Also, by breaking them down by region, this project provides a more nuanced view of Russian demographic change than basic national statistics. Russia is a massive and diverse country with a lot of variation, and by breaking trends down by region, readers have access to this diversity. The project only focus on the most basic aspects of demographics – births, deaths, foreign emigration and immigration, so there is a lot more to be explored, including inter-regional migration, levels of alcoholism, income distribution, and other associated factors. Hopefully, however, this project will be useful for those wishing to go more in depth into Russian demographics.
