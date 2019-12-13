@@ -1,0 +1,15 @@
+---
+title: "PDF"
+author: "Daniel Shapiro"
+date: "12/13/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Russian Regional Demographic Change
+
+#### By: Daniel Shapiro
+
